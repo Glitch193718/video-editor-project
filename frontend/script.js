@@ -1,5 +1,5 @@
 // Конфигурация - ЗАМЕНИ НА СВОЙ URL С RENDER
-const BACKEND_URL = 'https://b828b8021cb6cee2539b33ff1876e0c7.serveo.net'; // Замени на свой URL
+const BACKEND_URL = 'https://1adca3d2a5dc9438116e4298112d515e.serveo.net'; // Замени на свой URL
 
 // Текущие настройки
 let currentSettings = {
