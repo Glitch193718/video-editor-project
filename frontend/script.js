@@ -1,5 +1,5 @@
 // Конфигурация - ЗАМЕНИ НА СВОЙ URL С RENDER
-const BACKEND_URL = 'https://your-app-name.onrender.com'; // Замени на свой URL
+const BACKEND_URL = 'https://video-editor-api-atdl.onrender.com/'; // Замени на свой URL
 
 // Текущие настройки
 let currentSettings = {
