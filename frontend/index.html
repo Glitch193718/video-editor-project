@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Растяг фимозика - AI Видео-редактор</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Растяг фимозика</h1>
+            <p>AI-улучшение видео + смена форматов без потерь качества</p>
+        </div>
+
+        <div class="main-card">
+            <!-- Область загрузки -->
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Перетащите видео файл сюда</h3>
+                <p>MP4, AVI, MOV, MKV до 100MB</p>
+                <input type="file" id="fileInput" accept="video/*" style="display: none;">
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-folder-open"></i> Выбрать файл
+                </button>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-section">
+                <div class="preview-container">
+                    <div class="preview-placeholder" id="previewPlaceholder">
+                        <i class="fas fa-video"></i> Превью видео появится здесь
+                    </div>
+                    <video id="videoPreview" controls style="width: 100%; border-radius: 10px; display: none;"></video>
+                </div>
+                <div class="file-info" id="fileInfo" style="display: none; margin-top: 10px; text-align: center; color: #666;"></div>
+            </div>
+
+            <!-- Управление -->
+            <div class="controls-grid">
+                <div class="control-section">
+                    <h3><i class="fas fa-cog"></i> Качество обработки</h3>
+                    <div class="quality-buttons">
+                        <div class="quality-btn active" data-quality="lossless">
+                            <i class="fas fa-gem"></i>
+                            <div>
+                                <strong>💎 Без сжатия</strong>
+                                <div class="quality-desc">Максимальное качество</div>
+                            </div>
+                        </div>
+                        <div class="quality-btn" data-quality="compressed">
+                            <i class="fas fa-compress-alt"></i>
+                            <div>
+                                <strong>📦 Сжатие</strong>
+                                <div class="quality-desc">Оптимальный размер</div>
+                            </div>
+                        </div>
+                        <div class="quality-btn" data-quality="ai">
+                            <i class="fas fa-robot"></i>
+                            <div>
+                                <strong>🤖 AI-улучшение</strong>
+                                <div class="quality-desc">Нейросети + растяжка</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3><i class="fas fa-expand-alt"></i> Формат видео</h3>
+                    <div class="format-grid">
+                        <div class="format-btn active" data-format="1x1">1:1<br><small>1080×1080</small></div>
+                        <div class="format-btn" data-format="9x16">9:16<br><small>1080×1920</small></div>
+                        <div class="format-btn" data-format="16x9">16:9<br><small>1920×1080</small></div>
+                        <div class="format-btn" data-format="4x5">4:5<br><small>1080×1350</small></div>
+                        <div class="format-btn" data-format="1x2">1:2<br><small>1080×2160</small></div>
+                        <div class="format-btn" data-format="2x1">2:1<br><small>2160×1080</small></div>
+                        <div class="format-btn" data-format="21x9">21:9<br><small>2560×1080</small></div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3><i class="fas fa-magic"></i> Дополнительно</h3>
+                    <div class="additional-buttons">
+                        <button class="btn btn-outline" id="enhance4kBtn">
+                            <i class="fas fa-search-plus"></i> Улучшить до 4K
+                        </button>
+                        <button class="btn btn-outline" id="interpolateBtn">
+                            <i class="fas fa-forward"></i> Интерполяция 120FPS
+                        </button>
+                        <div class="send-buttons">
+                            <button class="btn btn-secondary active" id="sendAsVideoBtn">
+                                <i class="fas fa-film"></i> Как видео
+                            </button>
+                            <button class="btn btn-outline" id="sendAsFileBtn">
+                                <i class="fas fa-file-download"></i> Как файл
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопка обработки -->
+            <div class="process-section">
+                <button class="btn btn-primary process-btn" id="processBtn">
+                    <i class="fas fa-play-circle"></i> Начать обработку
+                </button>
+            </div>
+
+            <!-- Статистика -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="processedCount">0</div>
+                    <div class="stat-label">Обработано видео</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="aiEnhancedCount">0</div>
+                    <div class="stat-label">AI-улучшено</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="timeSaved">0</div>
+                    <div class="stat-label">Минут сэкономлено</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="userCount">1</div>
+                    <div class="stat-label">Активных пользователей</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция скачивания -->
+        <div class="download-section" id="downloadSection">
+            <div class="main-card">
+                <h3 class="download-title">✅ Обработка завершена!</h3>
+                <div class="preview-section">
+                    <div class="preview-container">
+                        <video id="resultVideo" controls style="width: 100%; border-radius: 10px;"></video>
+                    </div>
+                </div>
+                <div class="download-actions">
+                    <button class="btn btn-success download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i> Скачать результат
+                    </button>
+                    <button class="btn btn-outline" id="processAnotherBtn">
+                        <i class="fas fa-redo"></i> Обработать еще
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Оверлей обработки -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <h3 id="processingTitle">Обрабатываю видео...</h3>
+            <p id="processingText">Подождите немного, это займет некоторое время</p>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+            <div class="processing-time" id="processingTime"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+  </html>
