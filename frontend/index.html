@@ -5,17 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎬 Растяг фимозика - AI Видео-редактор</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-elements" id="floatingElements"></div>
+
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>🎬 Растяг фимозика</h1>
+            <div class="logo">🎬</div>
+            <h1>Растяг фимозика</h1>
             <p>AI-улучшение видео + смена форматов без потерь качества</p>
         </div>
 
+        <!-- Premium Banner -->
+        <div class="premium-banner">
+            <h3>🚀 ПРЕМИУМ КАЧЕСТВО</h3>
+            <p>Получи полную версию с AI-улучшением и без ограничений!</p>
+            <a href="https://t.me/glitch_qzq" class="ad-button" target="_blank">
+                <i class="fas fa-crown"></i>
+                ЗАКАЗАТЬ ПРЕМИУМ
+            </a>
+        </div>
+
+        <!-- Main Content -->
         <div class="main-card">
-            <!-- Область загрузки -->
+            <!-- Upload Area -->
             <div class="upload-area" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h3>Перетащите видео файл сюда</h3>
@@ -32,12 +52,12 @@
                     <div class="preview-placeholder" id="previewPlaceholder">
                         <i class="fas fa-video"></i> Превью видео появится здесь
                     </div>
-                    <video id="videoPreview" controls style="width: 100%; border-radius: 10px; display: none;"></video>
+                    <video id="videoPreview" controls style="width: 100%; border-radius: 15px; display: none;"></video>
                 </div>
-                <div class="file-info" id="fileInfo" style="display: none; margin-top: 10px; text-align: center; color: #666;"></div>
+                <div class="file-info" id="fileInfo" style="display: none;"></div>
             </div>
 
-            <!-- Управление -->
+            <!-- Controls -->
             <div class="controls-grid">
                 <div class="control-section">
                     <h3><i class="fas fa-cog"></i> Качество обработки</h3>
@@ -100,14 +120,14 @@
                 </div>
             </div>
 
-            <!-- Кнопка обработки -->
+            <!-- Process Button -->
             <div class="process-section">
                 <button class="btn btn-primary process-btn" id="processBtn">
                     <i class="fas fa-play-circle"></i> Начать обработку
                 </button>
             </div>
 
-            <!-- Статистика -->
+            <!-- Stats -->
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="processedCount">0</div>
@@ -128,13 +148,14 @@
             </div>
         </div>
 
-        <!-- Секция скачивания -->
+        <!-- Download Section -->
         <div class="download-section" id="downloadSection">
             <div class="main-card">
                 <h3 class="download-title">✅ Обработка завершена!</h3>
+                <div class="result-info" id="resultInfo"></div>
                 <div class="preview-section">
                     <div class="preview-container">
-                        <video id="resultVideo" controls style="width: 100%; border-radius: 10px;"></video>
+                        <video id="resultVideo" controls style="width: 100%; border-radius: 15px;"></video>
                     </div>
                 </div>
                 <div class="download-actions">
@@ -147,9 +168,25 @@
                 </div>
             </div>
         </div>
+
+        <!-- Footer Ad -->
+        <div class="footer-ad">
+            <h3>💎 Нужен собственный сайт или бот?</h3>
+            <p>Разработаю уникальный проект под ваши задачи с современным дизайном</p>
+            <div class="ad-buttons">
+                <a href="https://t.me/glitch_qzq" class="ad-button" target="_blank">
+                    <i class="fas fa-paper-plane"></i>
+                    НАПИСАТЬ В ТЕЛЕГРАМ
+                </a>
+                <a href="https://t.me/glitch_qzq" class="ad-button secondary" target="_blank">
+                    <i class="fas fa-shopping-cart"></i>
+                    КУПИТЬ СКРИПТ
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Оверлей обработки -->
+    <!-- Processing Overlay -->
     <div class="processing-overlay" id="processingOverlay">
         <div class="processing-content">
             <div class="spinner"></div>
@@ -160,9 +197,10 @@
             </div>
             <div class="progress-text" id="progressText">0%</div>
             <div class="processing-time" id="processingTime"></div>
+            <div class="processing-details" id="processingDetails"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-  </html>
+</html>
