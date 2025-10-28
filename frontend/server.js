@@ -25,23 +25,19 @@ let progressInterval = null;
 
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
+    // СРАЗУ скрываем прелоадер
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'none';
+    }
+    
+    // Запускаем приложение
     initializeApp();
 });
 
 async function initializeApp() {
-    // Скрываем прелоадер через 2 секунды
-    setTimeout(() => {
-        const preloader = document.getElementById('preloader');
-        preloader.classList.add('fade-out');
-        setTimeout(() => {
-            preloader.style.display = 'none';
-            // Запускаем анимации после загрузки
-            startBackgroundAnimations();
-        }, 500);
-    }, 2000);
-
     // Запускаем анимации счетчиков
-    setTimeout(animateCounters, 1000);
+    setTimeout(animateCounters, 500);
     
     // Настройка обработчиков событий
     setupEventListeners();
@@ -49,8 +45,8 @@ async function initializeApp() {
     // Загрузка статистики
     loadStats();
     
-    // Проверка соединения с бэкендом
-    await checkBackendConnection();
+    // Проверка соединения с бэкендом (в фоне)
+    checkBackendConnection().catch(console.error);
 }
 
 function startBackgroundAnimations() {
