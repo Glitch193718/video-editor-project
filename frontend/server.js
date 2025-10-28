@@ -1,5 +1,5 @@
 // Конфигурация
-const BACKEND_URL = 'https://your-app-name.onrender.com'; // Замени на свой URL
+const BACKEND_URL = 'https://5adeb6a21c5e04ac1a9de293d42fa9ab.serveo.net'; // Замени на свой URL
 const TELEGRAM_URL = 'https://t.me/glitch_qzq';
 
 // Текущие настройки
