@@ -1,5 +1,5 @@
-// Конфигурация - ЗАМЕНИ НА СВОЙ URL С RENDER
-const BACKEND_URL = 'https://1adca3d2a5dc9438116e4298112d515e.serveo.net'; // Замени на свой URL
+// Конфигурация - ЗАМЕНИ НА СВОЙ URL
+const BACKEND_URL = 'https://1adca3d2a5dc9438116e4298112d515e.serveo.net'; // Твой бэкенд на Render
 
 // Текущие настройки
 let currentSettings = {
@@ -18,17 +18,87 @@ let stats = {
     users: 1
 };
 
-// Таймер обработки
+// Таймеры
 let processTimer = null;
 let startTime = null;
+let progressInterval = null;
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    createFloatingElements();
     loadStats();
     setupEventListeners();
     checkBackendConnection();
+    animateElements();
 });
 
+// Функции для анимаций (остаются те же)
+function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 4 + 1;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = Math.random() * 10 + 5;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        
+        particlesContainer.appendChild(particle);
+    }
+}
+
+function createFloatingElements() {
+    const container = document.getElementById('floatingElements');
+    const elementCount = 8;
+    
+    for (let i = 0; i < elementCount; i++) {
+        const element = document.createElement('div');
+        element.className = 'floating-element';
+        
+        const size = Math.random() * 100 + 50;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = Math.random() * 15 + 10;
+        
+        element.style.width = `${size}px`;
+        element.style.height = `${size}px`;
+        element.style.left = `${posX}%`;
+        element.style.top = `${posY}%`;
+        element.style.animationDelay = `${delay}s`;
+        element.style.animationDuration = `${duration}s`;
+        element.style.background = `radial-gradient(circle, var(--primary) 0%, transparent 70%)`;
+        
+        container.appendChild(element);
+    }
+}
+
+function animateElements() {
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+}
+
+// РЕАЛЬНАЯ ЛОГИКА ОБРАБОТКИ
 function setupEventListeners() {
     // Загрузка файла
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);
@@ -88,14 +158,14 @@ function handleFileSelect(event) {
 
 function handleDragOver(event) {
     event.preventDefault();
-    event.currentTarget.style.borderColor = '#6366f1';
-    event.currentTarget.style.background = '#f0f4ff';
+    event.currentTarget.style.borderColor = 'var(--primary-light)';
+    event.currentTarget.style.background = 'rgba(139, 92, 246, 0.15)';
 }
 
 function handleDragLeave(event) {
     event.preventDefault();
-    event.currentTarget.style.borderColor = '#6366f1';
-    event.currentTarget.style.background = '#f8faff';
+    event.currentTarget.style.borderColor = 'var(--primary)';
+    event.currentTarget.style.background = 'rgba(139, 92, 246, 0.05)';
 }
 
 function handleFileDrop(event) {
@@ -114,6 +184,13 @@ function loadVideoFile(file) {
         return;
     }
 
+    // Проверка типа файла
+    const allowedTypes = ['video/mp4', 'video/avi', 'video/quicktime', 'video/x-matroska', 'video/webm'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Неподдерживаемый формат видео. Используйте MP4, AVI, MOV, MKV или WEBM');
+        return;
+    }
+
     currentSettings.file = file;
     const videoPreview = document.getElementById('videoPreview');
     const previewPlaceholder = document.getElementById('previewPlaceholder');
@@ -123,12 +200,13 @@ function loadVideoFile(file) {
     videoPreview.style.display = 'block';
     previewPlaceholder.style.display = 'none';
     
-    // Показываем информацию о файле
     const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-    fileInfo.textContent = `${file.name} (${fileSize} MB)`;
+    fileInfo.innerHTML = `
+        <strong>${file.name}</strong><br>
+        Размер: ${fileSize} MB • Тип: ${file.type.split('/')[1].toUpperCase()}
+    `;
     fileInfo.style.display = 'block';
     
-    // Скрываем секцию скачивания если она была открыта
     document.getElementById('downloadSection').style.display = 'none';
 }
 
@@ -138,7 +216,7 @@ async function processVideo() {
 
 async function processWithMode(mode) {
     if (!currentSettings.file) {
-        alert('Пожалуйста, выберите видео файл!');
+        showNotification('Пожалуйста, выберите видео файл!', 'error');
         return;
     }
 
@@ -157,7 +235,8 @@ async function processWithMode(mode) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
@@ -166,18 +245,18 @@ async function processWithMode(mode) {
             // Скачиваем результат
             const downloadResponse = await fetch(`${BACKEND_URL}${result.download_url}`);
             if (!downloadResponse.ok) {
-                throw new Error('Failed to download processed video');
+                throw new Error('Не удалось скачать обработанное видео');
             }
             
             const blob = await downloadResponse.blob();
-            showRealResult(blob, result.message);
+            showRealResult(blob, result);
         } else {
-            throw new Error(result.error || 'Unknown error occurred');
+            throw new Error(result.error || 'Произошла неизвестная ошибка');
         }
     } catch (error) {
         console.error('Processing error:', error);
         hideProcessing();
-        alert(`Ошибка обработки: ${error.message}\n\nПроверьте подключение к интернету и попробуйте снова.`);
+        showNotification(`Ошибка обработки: ${error.message}`, 'error');
     }
 }
 
@@ -185,29 +264,30 @@ function showProcessing(mode) {
     const overlay = document.getElementById('processingOverlay');
     const title = document.getElementById('processingTitle');
     const text = document.getElementById('processingText');
+    const details = document.getElementById('processingDetails');
     
     const modes = {
         stretch: { 
             title: '🔄 Растягиваю видео...', 
-            text: 'Изменяю формат без потерь качества' 
+            text: 'Изменяю формат без потерь качества',
+            details: `Формат: ${currentSettings.format} • Качество: ${getQualityName(currentSettings.quality)}`
         },
         enhance_4k: { 
             title: '🚀 Улучшаю до 4K...', 
-            text: 'AI-улучшение разрешения и деталей' 
+            text: 'AI-улучшение разрешения и деталей',
+            details: 'Разрешение: 3840×2160 • AI-обработка'
         },
         interpolate: { 
-            title: '🎬 Интерполирую кадры...', 
-            text: 'Создаю плавность 120FPS' 
-        },
-        ai_enhance: { 
-            title: '🤖 AI-улучшение...', 
-            text: 'Нейросети работают над качеством' 
+            title: '🎬 Интерполяция кадров...', 
+            text: 'Создаю плавность 120FPS',
+            details: 'Частота кадров: 120 FPS • AI-интерполяция'
         }
     };
     
     const modeConfig = modes[mode] || modes.stretch;
     title.textContent = modeConfig.title;
     text.textContent = modeConfig.text;
+    details.textContent = modeConfig.details;
     overlay.style.display = 'flex';
     
     // Сбрасываем прогресс
@@ -220,8 +300,17 @@ function showProcessing(mode) {
     updateProcessingTime();
     processTimer = setInterval(updateProcessingTime, 1000);
     
-    // Симуляция прогресса (в реальном приложении будет реальный прогресс с бэкенда)
+    // Симуляция прогресса (в реальном приложении можно сделать WebSocket для реального прогресса)
     simulateProgress();
+}
+
+function getQualityName(quality) {
+    const names = {
+        'lossless': 'Без сжатия',
+        'compressed': 'Сжатие',
+        'ai': 'AI-улучшение'
+    };
+    return names[quality] || quality;
 }
 
 function updateProcessingTime() {
@@ -240,18 +329,19 @@ function simulateProgress() {
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     
-    const interval = setInterval(() => {
-        progress += Math.random() * 8;
-        if (progress >= 95) {
-            progress = 95; // Останавливаемся на 95% до реального завершения
+    if (progressInterval) {
+        clearInterval(progressInterval);
+    }
+    
+    progressInterval = setInterval(() => {
+        progress += Math.random() * 5 + 2;
+        if (progress >= 90) {
+            progress = 90; // Останавливаемся на 90% до реального завершения
         }
         
         progressBar.style.width = progress + '%';
         progressText.textContent = Math.round(progress) + '%';
-    }, 500);
-    
-    // Сохраняем ID интервала для очистки
-    currentSettings.progressInterval = interval;
+    }, 800);
 }
 
 function hideProcessing() {
@@ -263,13 +353,13 @@ function hideProcessing() {
         processTimer = null;
     }
     
-    if (currentSettings.progressInterval) {
-        clearInterval(currentSettings.progressInterval);
-        currentSettings.progressInterval = null;
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
     }
 }
 
-function showRealResult(blob, message) {
+function showRealResult(blob, result) {
     hideProcessing();
     
     // Показываем 100% прогресс
@@ -281,6 +371,17 @@ function showRealResult(blob, message) {
     const resultVideo = document.getElementById('resultVideo');
     resultVideo.src = URL.createObjectURL(blob);
     
+    // Показываем информацию о результате
+    const resultInfo = document.getElementById('resultInfo');
+    if (result.processing_time) {
+        resultInfo.innerHTML = `
+            ✅ Видео успешно обработано за ${result.processing_time} секунд<br>
+            📊 ${result.original_resolution} → ${result.processed_resolution}
+        `;
+    } else {
+        resultInfo.innerHTML = '✅ Видео успешно обработано!';
+    }
+    
     // Сохраняем blob для скачивания
     currentSettings.processedBlob = blob;
     
@@ -289,19 +390,23 @@ function showRealResult(blob, message) {
         stats.aiEnhanced++;
     }
     stats.processed++;
-    stats.timeSaved += 3;
+    stats.timeSaved += Math.floor((result.processing_time || 10) / 60) + 1;
     updateStats();
     saveStats();
+    
+    showNotification('Видео успешно обработано!', 'success');
 }
 
 function downloadResult() {
     if (currentSettings.processedBlob) {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(currentSettings.processedBlob);
-        link.download = `processed_${currentSettings.format}_${Date.now()}.mp4`;
+        link.download = `vision_pro_${currentSettings.format}_${Date.now()}.mp4`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        showNotification('Видео скачивается...', 'success');
     }
 }
 
@@ -309,6 +414,111 @@ function resetToUpload() {
     document.getElementById('downloadSection').style.display = 'none';
     document.getElementById('fileInput').value = '';
     document.getElementById('fileInfo').style.display = 'none';
+    document.getElementById('videoPreview').style.display = 'none';
+    document.getElementById('previewPlaceholder').style.display = 'flex';
+    document.getElementById('resultInfo').innerHTML = '';
+    
+    currentSettings.file = null;
+    currentSettings.processedBlob = null;
+}
+
+async function checkBackendConnection() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/health`);
+        if (response.ok) {
+            console.log('✅ Backend connection: OK');
+        } else {
+            console.warn('⚠️ Backend connection: Weak');
+        }
+    } catch (error) {
+        console.error('❌ Backend connection: FAILED -', error.message);
+        showNotification('Бэкенд недоступен. Проверьте подключение.', 'error');
+    }
+}
+
+function showNotification(message, type = 'info') {
+    // Создаем уведомление
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}"></i>
+            ${message}
+        </div>
+    `;
+    
+    // Стили для уведомления
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: var(--shadow-lg);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        max-width: 300px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Удаляем через 5 секунд
+    setTimeout(() => {
+        notification.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+function loadStats() {
+    const savedStats = localStorage.getItem('videoEditorStats');
+    if (savedStats) {
+        stats = JSON.parse(savedStats);
+    }
+    updateStats();
+}
+
+function updateStats() {
+    document.getElementById('processedCount').textContent = stats.processed;
+    document.getElementById('aiEnhancedCount').textContent = stats.aiEnhanced;
+    document.getElementById('timeSaved').textContent = stats.timeSaved;
+    document.getElementById('userCount').textContent = stats.users;
+}
+
+function saveStats() {
+    localStorage.setItem('videoEditorStats', JSON.stringify(stats));
+}
+
+// Добавляем стили для уведомлений
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+    .notification {
+        transition: all 0.3s ease;
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(notificationStyles);ment.getElementById('fileInfo').style.display = 'none';
     document.getElementById('videoPreview').style.display = 'none';
     document.getElementById('previewPlaceholder').style.display = 'flex';
     
