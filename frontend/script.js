@@ -1,5 +1,5 @@
 // Конфигурация - ЗАМЕНИ НА СВОЙ URL
-const BACKEND_URL = 'https://1adca3d2a5dc9438116e4298112d515e.serveo.net'; // Твой бэкенд на Render
+const BACKEND_URL = 'https://5adeb6a21c5e04ac1a9de293d42fa9ab.serveo.net'; // Твой бэкенд на Render
 
 // Текущие настройки
 let currentSettings = {
