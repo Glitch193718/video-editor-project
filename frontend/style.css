@@ -420,3 +420,36 @@ body {
         flex-direction: column;
     }
   }
+/* Полный CSS код из предыдущего ответа */
+/* Добавляем только новые стили */
+
+.result-info {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    animation: slideIn 0.5s ease-out;
+}
+
+.ad-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ad-button.secondary {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+
+.ad-button.secondary:hover {
+    box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+}
+
+.processing-details {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--gray-light);
+}
